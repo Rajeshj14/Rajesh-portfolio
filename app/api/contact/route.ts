@@ -1,16 +1,13 @@
-// pages/api/contact.js or app/api/contact/route.js (for Next.js 13+)
-
 import { PrismaClient } from '@prisma/client'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 const prisma = new PrismaClient()
 
-export async function POST(request: { json: () => any }) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { name, email, subject, phone, company, message } = body
 
-    // Validate required fields
     if (!name || !email || !subject || !phone || !company || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -18,16 +15,8 @@ export async function POST(request: { json: () => any }) {
       )
     }
 
-    // Create new contact submission
     const submission = await prisma.contactSubmission.create({
-      data: {
-        name,
-        email,
-        subject,
-        phone,
-        company,
-        message
-      }
+      data: { name, email, subject, phone, company, message }
     })
 
     return NextResponse.json(

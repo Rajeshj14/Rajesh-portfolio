@@ -313,7 +313,14 @@ export default function PortfolioCards() {
 }
 
 // Reusable Portfolio Card Component
-function PortfolioCard({ title, subtitle, category, image }) {
+type PortfolioCardProps = {
+  title: string;
+  subtitle: string;
+  category: string;
+  image: string;
+};
+
+function PortfolioCard({ title, subtitle, category, image }: PortfolioCardProps) {
   return (
     <div className="group rounded-xl md:rounded-2xl shadow-lg w-full h-64 sm:h-72 md:h-80 lg:h-96 relative overflow-hidden cursor-pointer mx-auto">
       {/* Background image - always visible */}

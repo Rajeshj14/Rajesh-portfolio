@@ -20,12 +20,31 @@ export default function ContactSection() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    interface ChangeEventTarget extends EventTarget {
+        name: string;
+        value: string;
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target as ChangeEventTarget;
+        setFormData((prev: typeof formData) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    interface ContactFormData {
+        name: string;
+        email: string;
+        subject: string;
+        message: string;
+        phone: string;
+        company: string;
+    }
+
+    interface ApiResponse {
+        message?: string;
+        error?: string;
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
 
@@ -38,7 +57,7 @@ export default function ContactSection() {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
+            const data: ApiResponse = await response.json();
 
             if (response.ok) {
                 setSubmitMessage(data.message || 'Thank you for your submission!');
@@ -172,7 +191,7 @@ export default function ContactSection() {
                             />
                         </div>
                         <textarea
-                            rows="4"
+                            rows={4}
                             name="message"
                             placeholder="Your message *"
                             className="w-full p-2 bg-transparent border border-gray-500 text-white text-sm rounded"
