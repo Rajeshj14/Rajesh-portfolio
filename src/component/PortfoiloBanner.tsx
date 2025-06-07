@@ -830,7 +830,7 @@ export default function ZemoProfile() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Project Details
+                  Projects Details
                 </label>
                 <textarea
                   rows={4}
