@@ -34,7 +34,6 @@
 //   }
 // }
 
-
 import { PrismaClient } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -42,57 +41,67 @@ const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Connecting to database...');
+    
     const body = await request.json()
-    console.log('Received data:', body); // Log incoming data
-    
-    const { name, email, subject, phone, company, message } = body
+    console.log('Received data:', body);
 
-    // Validate required fields
-    const requiredFields = ['name', 'email', 'subject', 'phone', 'company', 'message'];
-    const missingFields = requiredFields.filter(field => !body[field]);
-    
-    if (missingFields.length > 0) {
+    // Basic validation
+    if (!body.name || !body.email) {
+      console.log('Validation failed - missing fields');
       return NextResponse.json(
-        { error: 'Missing required fields', missingFields },
+        { error: 'Name and email are required' },
         { status: 400 }
       )
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      )
-    }
-
+    console.log('Attempting to create record...');
     const submission = await prisma.contactSubmission.create({
-      data: { 
-        name: name.trim(),
-        email: email.trim(),
-        subject: subject.trim(),
-        phone: phone.trim(),
-        company: company.trim(),
-        message: message.trim()
+      data: {
+        name: body.name,
+        email: body.email,
+        subject: body.subject || '',
+        phone: body.phone || '',
+        company: body.company || '',
+        message: body.message || ''
       }
-    })
+    });
 
+    console.log('Record created successfully:', submission);
     return NextResponse.json(
       { message: 'Thank you for your submission!', submission },
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('Detailed error:', {
+    console.error('FULL ERROR DETAILS:', {
       message: error.message,
       stack: error.stack,
-      name: error.name
+      name: error.name,
+      meta: error.meta
     });
     
     return NextResponse.json(
       { 
         error: 'Failed to process your submission',
+        // Only show details in development
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500 }
+    )
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+export async function GET() {
+  try {
+    const count = await prisma.contactSubmission.count()
+    return NextResponse.json({ success: true, count })
+  } catch (error: any) {
+    return NextResponse.json(
+      { 
+        success: false,
+        error: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
     )
