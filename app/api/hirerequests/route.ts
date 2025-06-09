@@ -41,91 +41,171 @@
 // Update your API route to handle Vercel deployment issues
 // /app/api/hire-me/route.ts
 
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+// import { NextRequest, NextResponse } from 'next/server';
+// import { PrismaClient } from '@prisma/client';
 
-// Create a global instance to prevent multiple connections
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+// // Create a global instance to prevent multiple connections
+// const globalForPrisma = globalThis as unknown as {
+//   prisma: PrismaClient | undefined;
+// };
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
+// const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-export async function POST(request: NextRequest) {
+// export async function POST(request: NextRequest) {
+//   try {
+//     const body = await request.json();
+//     const { name, email, project, budget } = body;
+
+//     // Validate required fields
+//     if (!name || !email || !project || !budget) {
+//       return NextResponse.json(
+//         { error: 'All fields are required' },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Check if database connection is available
+//     if (!process.env.DATABASE_URL) {
+//       console.error('DATABASE_URL is not defined');
+//       return NextResponse.json(
+//         { error: 'Database configuration error' },
+//         { status: 500 }
+//       );
+//     }
+
+//     // Test database connection
+//     await prisma.$connect();
+
+//     // Save to Prisma database
+//     const hireRequest = await prisma.hireRequest.create({
+//       data: {
+//         name: name.trim(),
+//         email: email.trim(),
+//         project: project.trim(),
+//         budget: budget.trim(),
+//       },
+//     });
+
+//     return NextResponse.json(
+//       { 
+//         message: 'Request submitted successfully', 
+//         id: hireRequest.id,
+//         success: true
+//       },
+//       { status: 201 }
+//     );
+
+//   } catch (error) {
+//     console.error('Database error:', error);
+    
+//     // More detailed error logging for debugging
+//     if (error instanceof Error) {
+//       console.error('Error message:', error.message);
+//       console.error('Error stack:', error.stack);
+//     }
+
+//   return NextResponse.json(
+//     { 
+//       error: 'Internal server error',
+//       details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+//     },
+//     { status: 500 }
+//   );
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }
+
+// // Add this to handle CORS issues if needed
+// export async function OPTIONS(request: NextRequest) {
+//   return new NextResponse(null, {
+//     status: 200,
+//     headers: {
+//       'Access-Control-Allow-Origin': '*',
+//       'Access-Control-Allow-Methods': 'POST, OPTIONS',
+//       'Access-Control-Allow-Headers': 'Content-Type',
+//     },
+//   });
+// }
+
+import { NextResponse } from 'next/server'
+import prisma from '../../../lib/prisma'
+
+export const dynamic = 'force-dynamic' // Add this for Vercel
+
+export async function POST(request: Request) {
+  // Add CORS headers
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  }
+
   try {
-    const body = await request.json();
-    const { name, email, project, budget } = body;
+    const body = await request.json()
+    console.log('Request body:', JSON.stringify(body, null, 2))
+
+    if (!prisma) {
+      throw new Error('Prisma client not initialized')
+    }
 
     // Validate required fields
-    if (!name || !email || !project || !budget) {
+    if (!body.name || !body.email || !body.project || !body.budget) {
       return NextResponse.json(
         { error: 'All fields are required' },
-        { status: 400 }
-      );
+        { status: 400, headers }
+      )
     }
 
-    // Check if database connection is available
-    if (!process.env.DATABASE_URL) {
-      console.error('DATABASE_URL is not defined');
-      return NextResponse.json(
-        { error: 'Database configuration error' },
-        { status: 500 }
-      );
-    }
-
-    // Test database connection
-    await prisma.$connect();
-
-    // Save to Prisma database
     const hireRequest = await prisma.hireRequest.create({
       data: {
-        name: name.trim(),
-        email: email.trim(),
-        project: project.trim(),
-        budget: budget.trim(),
+        name: body.name.trim(),
+        email: body.email.trim(),
+        project: body.project.trim(),
+        budget: body.budget.trim(),
       },
-    });
+    })
+
+    console.log('Record created:', hireRequest.id)
 
     return NextResponse.json(
       { 
-        message: 'Request submitted successfully', 
+        success: true,
         id: hireRequest.id,
-        success: true
+        message: 'Request submitted successfully'
       },
-      { status: 201 }
-    );
-
-  } catch (error) {
-    console.error('Database error:', error);
+      { status: 201, headers }
+    )
     
-    // More detailed error logging for debugging
-    if (error instanceof Error) {
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-    }
+  } catch (error: any) {
+    console.error('Full error:', {
+      message: error.message,
+      stack: error.stack,
+      error: JSON.stringify(error, null, 2)
+    })
 
-  return NextResponse.json(
-    { 
-      error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? String(error) : undefined
-    },
-    { status: 500 }
-  );
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { 
+        error: 'Database operation failed',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
+      { status: 500, headers }
+    )
   }
 }
 
-// Add this to handle CORS issues if needed
-export async function OPTIONS(request: NextRequest) {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
+// Add OPTIONS handler
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    { 
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+    }
+  )
 }

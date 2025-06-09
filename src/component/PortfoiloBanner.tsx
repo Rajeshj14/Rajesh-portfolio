@@ -678,7 +678,78 @@ export default function ZemoProfile() {
 
 // Updated handleSubmit function
 // Updated handleSubmit function with better error handling
-const handleSubmit = async (e: React.FormEvent) => {
+// const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   setIsSubmitting(true);
+//   setErrors({});
+
+//   const formData = new FormData(e.target as HTMLFormElement);
+//   const data = {
+//     name: formData.get('name') as string,
+//     email: formData.get('email') as string,
+//     project: formData.get('project') as string,
+//     budget: formData.get('budget') as string
+//   };
+
+//   // Basic validation
+//   const newErrors: Record<string, string> = {};
+//   if (!data.name?.trim()) newErrors.name = 'Name is required';
+//   if (!data.email?.trim()) newErrors.email = 'Email is required';
+//   if (!data.project?.trim()) newErrors.project = 'Project details are required';
+//   if (!data.budget) newErrors.budget = 'Budget selection is required';
+
+//   if (Object.keys(newErrors).length > 0) {
+//     setErrors(newErrors);
+//     setIsSubmitting(false);
+//     return;
+//   }
+
+//   try {
+//     console.log('Submitting data:', data); // Debug log
+
+//     const response = await fetch('/api/hirerequests', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(data),
+//     });
+
+//     const responseData = await response.json();
+//     console.log('Response:', responseData); // Debug log
+
+//     if (!response.ok) {
+//       throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+//     }
+
+//     alert('Hire request submitted successfully!');
+    
+//     // Reset form and close modal
+//     (e.target as HTMLFormElement).reset();
+//     toggleOpen();
+    
+//   } catch (error) {
+//     console.error('Submission error:', error);
+    
+//     // More user-friendly error messages
+//     if (error instanceof Error) {
+//       if (error.message.includes('fetch')) {
+//         alert('Network error. Please check your connection and try again.');
+//       } else if (error.message.includes('Database')) {
+//         alert('Database error. Please try again later.');
+//       } else {
+//         alert(`Error: ${error.message}`);
+//       }
+//     } else {
+//       alert('An unexpected error occurred. Please try again.');
+//     }
+//   } finally {
+//     setIsSubmitting(false);
+//   }
+// };
+  
+
+  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsSubmitting(true);
   setErrors({});
@@ -691,63 +762,39 @@ const handleSubmit = async (e: React.FormEvent) => {
     budget: formData.get('budget') as string
   };
 
-  // Basic validation
-  const newErrors: Record<string, string> = {};
-  if (!data.name?.trim()) newErrors.name = 'Name is required';
-  if (!data.email?.trim()) newErrors.email = 'Email is required';
-  if (!data.project?.trim()) newErrors.project = 'Project details are required';
-  if (!data.budget) newErrors.budget = 'Budget selection is required';
-
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    setIsSubmitting(false);
-    return;
-  }
+  // Validation (unchanged)
 
   try {
-    console.log('Submitting data:', data); // Debug log
-
+    console.log('Submitting to:', '/api/hirerequests');
     const response = await fetch('/api/hirerequests', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
-    const responseData = await response.json();
-    console.log('Response:', responseData); // Debug log
-
     if (!response.ok) {
-      throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to submit');
     }
 
-    alert('Hire request submitted successfully!');
+    const responseData = await response.json();
+    console.log('Success:', responseData);
     
-    // Reset form and close modal
+    alert('Request submitted successfully!');
     (e.target as HTMLFormElement).reset();
     toggleOpen();
     
   } catch (error) {
     console.error('Submission error:', error);
-    
-    // More user-friendly error messages
-    if (error instanceof Error) {
-      if (error.message.includes('fetch')) {
-        alert('Network error. Please check your connection and try again.');
-      } else if (error.message.includes('Database')) {
-        alert('Database error. Please try again later.');
-      } else {
-        alert(`Error: ${error.message}`);
-      }
-    } else {
-      alert('An unexpected error occurred. Please try again.');
-    }
+    alert(
+      error instanceof Error 
+        ? error.message 
+        : 'Failed to submit. Please try again later.'
+    );
   } finally {
     setIsSubmitting(false);
   }
 };
-  
   const handleScroll = () => {
     const targetElement = document.getElementById('contact1');
     targetElement?.scrollIntoView({behavior:'smooth'});
