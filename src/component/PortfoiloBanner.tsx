@@ -647,7 +647,7 @@ export default function ZemoProfile() {
       });
       setActiveSection(sectionId);
     }
-    setIsMobileMenuOpen(false); 
+    setIsMobileMenuOpen(false); // Close mobile menu after selection
   };
 
   useEffect(() => {
@@ -658,7 +658,7 @@ export default function ZemoProfile() {
         setIsScrolled(false);
       }
 
-
+      // Update active section based on scroll position
       const sections = ['home', 'about', 'service', 'portfolio', 'blog', 'contact'];
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -676,125 +676,32 @@ export default function ZemoProfile() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-// Updated handleSubmit function
-// Updated handleSubmit function with better error handling
-// const handleSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-//   setIsSubmitting(true);
-//   setErrors({});
-
-//   const formData = new FormData(e.target as HTMLFormElement);
-//   const data = {
-//     name: formData.get('name') as string,
-//     email: formData.get('email') as string,
-//     project: formData.get('project') as string,
-//     budget: formData.get('budget') as string
-//   };
-
-//   // Basic validation
-//   const newErrors: Record<string, string> = {};
-//   if (!data.name?.trim()) newErrors.name = 'Name is required';
-//   if (!data.email?.trim()) newErrors.email = 'Email is required';
-//   if (!data.project?.trim()) newErrors.project = 'Project details are required';
-//   if (!data.budget) newErrors.budget = 'Budget selection is required';
-
-//   if (Object.keys(newErrors).length > 0) {
-//     setErrors(newErrors);
-//     setIsSubmitting(false);
-//     return;
-//   }
-
-//   try {
-//     console.log('Submitting data:', data); // Debug log
-
-//     const response = await fetch('/api/hirerequests', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(data),
-//     });
-
-//     const responseData = await response.json();
-//     console.log('Response:', responseData); // Debug log
-
-//     if (!response.ok) {
-//       throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
-//     }
-
-//     alert('Hire request submitted successfully!');
-    
-//     // Reset form and close modal
-//     (e.target as HTMLFormElement).reset();
-//     toggleOpen();
-    
-//   } catch (error) {
-//     console.error('Submission error:', error);
-    
-//     // More user-friendly error messages
-//     if (error instanceof Error) {
-//       if (error.message.includes('fetch')) {
-//         alert('Network error. Please check your connection and try again.');
-//       } else if (error.message.includes('Database')) {
-//         alert('Database error. Please try again later.');
-//       } else {
-//         alert(`Error: ${error.message}`);
-//       }
-//     } else {
-//       alert('An unexpected error occurred. Please try again.');
-//     }
-//   } finally {
-//     setIsSubmitting(false);
-//   }
-// };
-  
-
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setErrors({});
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrors({});
 
-  const formData = new FormData(e.target as HTMLFormElement);
-  const data = {
-    name: formData.get('name') as string,
-    email: formData.get('email') as string,
-    project: formData.get('project') as string,
-    budget: formData.get('budget') as string
-  };
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      project: formData.get('project') as string,
+      budget: formData.get('budget') as string
+    };
 
-  // Validation (unchanged)
-
-  try {
-    console.log('Submitting to:', '/api/hirerequests');
-    const response = await fetch('/api/hirerequests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to submit');
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      alert('Hire request submitted successfully!');
+      toggleOpen();
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const responseData = await response.json();
-    console.log('Success:', responseData);
-    
-    alert('Request submitted successfully!');
-    (e.target as HTMLFormElement).reset();
-    toggleOpen();
-    
-  } catch (error) {
-    console.error('Submission error:', error);
-    alert(
-      error instanceof Error 
-        ? error.message 
-        : 'Failed to submit. Please try again later.'
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
+  
   const handleScroll = () => {
     const targetElement = document.getElementById('contact1');
     targetElement?.scrollIntoView({behavior:'smooth'});
@@ -884,93 +791,85 @@ export default function ZemoProfile() {
       </nav>
 
       {/* Hire Me Popup */}
-{/* Replace your existing Hire Me Popup section with this: */}
+      {isPopOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={toggleOpen}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1"
+            >
+              <FaTimes size={20} />
+            </button>
 
-{/* Hire Me Popup */}
-{isPopOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full mx-4 relative max-h-[90vh] overflow-y-auto">
-      <button
-        onClick={toggleOpen}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1"
-      >
-        <FaTimes size={20} />
-      </button>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center text-gray-800">Hire Me</h2>
 
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center text-gray-800">Hire Me</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  className={`mt-1 block w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              </div>
 
-      {/* Wrap inputs in form element */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Your Name
-          </label>
-          <input
-            type="text"
-            name="name" // Add name attribute
-            required
-            className={`mt-1 block w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
-          />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
+                />
+                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Projects Details
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  className={`mt-1 block w-full px-3 py-2 border ${errors.project ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
+                ></textarea>
+                {errors.project && <p className="mt-1 text-sm text-red-600">{errors.project}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Budget Range
+                </label>
+                <select
+                  required
+                  className={`mt-1 block w-full px-3 py-2 border ${errors.budget ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
+                >
+                  <option value="">Select budget range</option>
+                  <option value="1k-5k">$1,000 - $5,000</option>
+                  <option value="5k-10k">$5,000 - $10,000</option>
+                  <option value="10k-25k">$10,000 - $25,000</option>
+                  <option value="25k+">$25,000+</option>
+                </select>
+                {errors.budget && <p className="mt-1 text-sm text-red-600">{errors.budget}</p>}
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email Address
-          </label>
-          <input
-            type="email"
-            name="email" // Add name attribute
-            required
-            className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
-          />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Project Details
-          </label>
-          <textarea
-            rows={4}
-            name="project" // Add name attribute
-            required
-            className={`mt-1 block w-full px-3 py-2 border ${errors.project ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
-          ></textarea>
-          {errors.project && <p className="mt-1 text-sm text-red-600">{errors.project}</p>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Budget Range
-          </label>
-          <select
-            name="budget" // Add name attribute
-            required
-            className={`mt-1 block w-full px-3 py-2 border ${errors.budget ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm sm:text-base`}
-          >
-            <option value="">Select budget range</option>
-            <option value="1k-5k">$1,000 - $5,000</option>
-            <option value="5k-10k">$5,000 - $10,000</option>
-            <option value="10k-25k">$10,000 - $25,000</option>
-            <option value="25k+">$25,000+</option>
-          </select>
-          {errors.budget && <p className="mt-1 text-sm text-red-600">{errors.budget}</p>}
-        </div>
-
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Request'}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
 
       {/* Main Content */}
       <div className="flex-grow flex flex-col lg:flex-row items-center justify-between px-4 sm:px-6 lg:px-8 xl:px-16 relative pt-16 sm:pt-20 lg:pt-16 pb-8 lg:pb-0">
