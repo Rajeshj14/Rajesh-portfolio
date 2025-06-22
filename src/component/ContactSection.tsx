@@ -7,6 +7,7 @@ import {
     FaInstagram,
     FaLinkedinIn,
 } from "react-icons/fa";
+import emailjs from '@emailjs/browser';
 
 export default function ContactSection() {
     const [formData, setFormData] = useState({
@@ -20,68 +21,52 @@ export default function ContactSection() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
 
-    interface ChangeEventTarget extends EventTarget {
-        name: string;
-        value: string;
-    }
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target as ChangeEventTarget;
-        setFormData((prev: typeof formData) => ({ ...prev, [name]: value }));
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    interface ContactFormData {
-        name: string;
-        email: string;
-        subject: string;
-        message: string;
-        phone: string;
-        company: string;
-    }
-
-    interface ApiResponse {
-        message?: string;
-        error?: string;
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitMessage('');
 
         try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            // Use environment variables
+            const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_sqtgx9l';
+            const templateId = process.env.NEXT_PUBLIC_MY_CUSTOM_EMAIL_TEMPLATE || 'template_p1tjmie';
+            const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'yee_Gr6X5eGBTpASa';
+
+            // Send form data using EmailJS
+            const result = await emailjs.sendForm(
+                serviceId,
+                templateId,
+                e.currentTarget as HTMLFormElement,
+                publicKey
+            );
+
+            console.log('Email sent successfully:', result);
+            setSubmitMessage('Thank you for your message! We will get back to you soon.');
+            
+            // Reset form
+            setFormData({
+                name: '',
+                email: '',
+                subject: '',
+                message: '',
+                phone: '',
+                company: ''
             });
-
-            const data: ApiResponse = await response.json();
-
-            if (response.ok) {
-                setSubmitMessage(data.message || 'Thank you for your submission!');
-                // Reset form
-                setFormData({
-                    name: '',
-                    email: '',
-                    subject: '',
-                    phone: '',
-                    company: '',
-                    message: '',
-                });
-            } else {
-                setSubmitMessage(data.error || 'Failed to submit form');
-            }
-        } catch (error) {
-            setSubmitMessage('Network error. Please try again.');
+        } catch (error: any) {
+            console.error('Error sending email:', error);
+            setSubmitMessage(error.text || 'There was an error sending your message. Please try again later.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <section id="contact" className="bg-[#00162A] px-6 py-12 md:py-20 relative">
+        <section id="contact" className="bg-[#00162A]  py-14 px-4 md:py-9 lg:py-13 xl:py-19 relative">
             {/* Background Text */}
             <h1
                 className="absolute top-8 left-1/2 transform -translate-x-1/2 select-none z-0 uppercase"
@@ -100,11 +85,11 @@ export default function ContactSection() {
             </h1>
 
             {/* Title */}
-            <div id='letstalk' className="relative z-10 text-center mb-12 mt-8">
-                <div className="flex justify-center items-center gap-4">
-                    <div className="w-12 h-1 bg-red-500" />
-                    <h2 id="contact1" className="text-3xl md:text-4xl font-bold text-white">MY CONTACT</h2>
-                    <div className="w-12 h-1 bg-red-500" />
+            <div id='letstalk' className="relative z-10 text-center mb-10 sm:mt-10 lg:mb-13 xl:mb-15">
+                <div className="flex justify-center items-center gap-1 md:gap-4">
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
+                    <h2 id="contact1" className="text-md md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">MY CONTACT</h2>
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
                 </div>
             </div>
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-5">
@@ -133,7 +118,7 @@ export default function ContactSection() {
                 </div>
 
                 {/* Right Side - Form */}
-                <div className="bg-[#0d2a3c] p-6 md:p-8 rounded-md basis-full md:basis-2/2 text-white space-y-4">
+                <div className="bg-[#0d2a3c] p-6 md:p-8 rounded-md basis-full md:basis-2/3 text-white space-y-4">
                     <h3 className="text-lg font-semibold border-l-2 border-red-500 pl-3">Get In Touch</h3>
                     {submitMessage && (
                         <div className={`p-3 rounded ${submitMessage.includes('Thank you') ? 'bg-green-500' : 'bg-red-500'}`}>
@@ -200,15 +185,13 @@ export default function ContactSection() {
                             required
                         ></textarea>
                         <button
-
                             type="submit"
                             disabled={isSubmitting}
-                            className={`bg-red-500 text-white hover:bg-red-600 text-black font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 hover:scale-105 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                            className={`bg-red-500 text-white hover:bg-red-600 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 hover:scale-105 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                         >
                             {isSubmitting ? 'Submitting...' : 'Submit'}
                         </button>
-
                     </form>
                 </div>
             </div>
@@ -222,7 +205,6 @@ export default function ContactSection() {
                     allowFullScreen
                 />
             </div>
-
         </section>
     );
 }

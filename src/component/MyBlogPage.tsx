@@ -41,7 +41,7 @@ const blogs = [
 
 const BlogSection = () => {
     return (
-        <section id="blog" className="bg-[#00162A] py-16 px-4 text-white relative">
+        <section id="blog" className="bg-[#00162A] py-13 px-4 md:py-2 lg:py-6 xl:py-14 text-white relative">
             {/* Header */}
             {/* Background Text */}
             <h1
@@ -60,11 +60,11 @@ const BlogSection = () => {
             >
                BLOGS
             </h1>
-            <div className="relative z-10 text-center mb-12 mt-12">
-                <div className="flex justify-center items-center gap-4">
-                    <div className="w-12 h-1 bg-red-500" />
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">MY BLOGS</h2>
-                    <div className="w-12 h-1 bg-red-500" />
+            <div className="relative z-10 text-center mb-8 p-0 m-1 md:p-0  sm:mt-17">
+                <div className="flex justify-center items-center gap-1 md:gap-4">
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
+                    <h2 className="text-md md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">MY BLOGS</h2>
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
                 </div>
             </div>
 

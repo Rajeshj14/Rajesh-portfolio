@@ -224,7 +224,7 @@ import React from 'react';
 
 export default function PortfolioCards() {
   return (
-    <section id="portfolio" className="bg-[#00162A] py-8 md:py-16 px-4 text-white relative">
+    <section id="portfolio" className="bg-[#00162A] py-10 px-4 md:py-2 lg:py-6 xl:py-14  text-white relative">
       {/* Background Text */}
       <h1
         className="absolute top-4 md:top-8 left-1/2 transform -translate-x-1/2 select-none z-0 uppercase"
@@ -244,11 +244,11 @@ export default function PortfolioCards() {
       </h1>
       
       {/* Header */}
-      <div className="relative z-10 text-center mb-8 mt-12 md:mt-16">
-        <div className="flex justify-center items-center gap-2 md:gap-4">
-          <div className="w-8 md:w-12 h-1 bg-red-500" />
-          <h2 className="text-2xl md:text-4xl font-bold text-white">MY PORTFOLIO</h2>
-          <div className="w-8 md:w-12 h-1 bg-red-500" />
+      <div className="relative z-10 text-center mb-8 p-0 m-1 md:p-0  sm:mt-17">
+        <div className="flex justify-center items-center gap-1 md:gap-4">
+          <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
+          <h2 className="text-md md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">MY PORTFOLIO</h2>
+          <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
         </div>
       </div>
       

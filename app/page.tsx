@@ -12,6 +12,7 @@ import HiremePage from "./Hireme/page";
 import MyPortfolioPage from "./myportfolio/page";
 import ContactPage from "./contact/page";
 import ProjectCTA from "@/component/Footerspages";
+import MySkills from "./myskills/page";
 // import Navbar from "./component/SideBar";
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
       <ProfileBanner />
       <AboutSection />
       <ServiceCards />
-      <ExperiencePage />
+      <MySkills />
       <MyPortfolioPage />
       <HiremePage />
       <MyBlogPages />

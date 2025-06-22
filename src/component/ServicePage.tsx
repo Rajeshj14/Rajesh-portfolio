@@ -22,9 +22,9 @@ const services = [
 
 export default function ServicesSection() {
     return (
-        <div id="service" className="py-16 px-4 text-center relative bg-[#00162A] text-white py-20 px-6 overflow-hidden">
+        <div id="service" className="py-13 px-4 md:py-2 lg:py-6 xl:py-14 text-center relative bg-[#00162A] text-white  overflow-hidden">
             <h1
-                className="absolute top-8 left-1/2 transform -translate-x-1/2 select-none z-0 uppercase"
+                className="absolute top-8 left-1/2 transform -translate-x-1/2 select-none z-0 uppercase mb-0"
                 style={{
                     WebkitTextStrokeWidth: '1px',
                     WebkitTextStrokeColor: '#fff',
@@ -39,14 +39,14 @@ export default function ServicesSection() {
             >
                 SERVICES
             </h1>
-      {/* Title */}
-      <div className="relative z-10 text-center mb-12 mt-8">
-        <div className="flex justify-center items-center gap-4">
-          <div className="w-12 h-1 bg-red-500" />
-          <h2 className="text-3xl md:text-4xl font-bold text-white">MY SERVICES</h2>
-          <div className="w-12 h-1 bg-red-500" />
-        </div>
-      </div>
+            {/* Title */}
+            <div className="relative z-10 text-center mb-8 p-0 m-1 md:p-0  sm:mt-17">
+                <div className="flex justify-center items-center gap-1 md:gap-4">
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
+                    <h2 className="text-md md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">MY SERVICES</h2>
+                    <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto ">
                 {services.map((service, index) => (
@@ -56,8 +56,9 @@ export default function ServicesSection() {
                     >
                         {/* Gradient Spinning Circle */}
                         <div className="relative w-20 h-20 mb-4">
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-pink-500 via-purple-200 to-blue-500 animate-[spin_1s_linear_infinite]"></div>
-                            <div className="absolute inset-1 flex items-center justify-center bg-gradient-to-r from-pink-600 to-purple-600 rounded-full shadow-md">
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-red-700 via-pink-200 to-pink-500 animate-[spin_1s_linear_infinite]"></div>
+                            <div className="absolute inset-1 flex items-center justify-center bg-gradient-to-r from-red-600 to-orange-500 rounded-full shadow-md">
+                            {/* <div className="absolute inset-1 flex items-center justify-center bg-gradient-to-r from-pink-600 to-purple-600 rounded-full shadow-md"> */}
                                 {service.icon}
                             </div>
                         </div>
