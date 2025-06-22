@@ -244,7 +244,7 @@ export default function PortfolioCards() {
       </h1>
       
       {/* Header */}
-      <div className="relative z-10 text-center mb-8 p-0 m-1 md:p-0  sm:mt-17">
+      <div className="relative z-10 text-center  mb-10 sm:mt-11">
         <div className="flex justify-center items-center gap-1 md:gap-4">
           <div className="w-6 md:w-9 lg:w-11 xl:w-12 h-1 bg-red-500" />
           <h2 className="text-md md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white">MY PORTFOLIO</h2>

@@ -309,9 +309,9 @@ const AboutSection = () => {
           <div className="grid md:grid-cols-2 gap-8 items-start">
             {/* Profile Image */}
             <div className="flex justify-center md:justify-start">
-              <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-lg overflow-hidden shadow-2xl border-2 border-red-500/30">
+              <div className="w-64 h-64 sm:w-140 sm:h-110 rounded-lg overflow-hidden shadow-2xl border-2 border-red-500/30">
                 <img
-                  src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&dpr=2"
+                  src=""
                   alt="Profile"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />

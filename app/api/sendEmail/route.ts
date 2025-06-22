@@ -1,20 +1,8 @@
-// pages/api/sendEmail.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
-import emailjs from '@emailjs/browser'; // Changed to browser version
+// app/api/sendEmail/route.ts
+import { NextResponse } from 'next/server'
+import emailjs from '@emailjs/browser' // Use the Node.js version!
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  // Handle OPTIONS request first for CORS
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    return res.status(200).end();
-  }
-
-
+export async function POST(request: Request) {
   try {
     const {
       name,
@@ -25,15 +13,21 @@ export default async function handler(
       companyName,
       hireMe,
       additionalInfo
-    } = req.body;
+    } = await request.json()
 
     // Validate required fields
     if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required' });
+      return NextResponse.json(
+        { error: 'Name and email are required' },
+        { status: 400 }
+      )
     }
 
-    // Initialize EmailJS (browser version)
-    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+    // Initialize EmailJS (Node.js version)
+    emailjs.init({
+      publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
+
+    })
 
     // Send email
     const response = await emailjs.send(
@@ -49,15 +43,18 @@ export default async function handler(
         hireMe: hireMe !== null ? (hireMe ? 'Yes' : 'No') : 'Not specified',
         additionalInfo: additionalInfo || 'Not provided'
       }
-    );
+    )
 
-    return res.status(200).json({ success: true, data: response });
+    return NextResponse.json({ success: true, data: response })
 
   } catch (error) {
-    console.error('Email sending error:', error);
-    return res.status(500).json({ 
-      error: 'Failed to send email',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Email sending error:', error)
+    return NextResponse.json(
+      { 
+        error: 'Failed to send email',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

@@ -281,6 +281,7 @@ export default function ZemoProfile() {
                   <Typewrite
                     options={{
                       strings: [
+                        "Front End Developer",
                         "Software Developer.",
                         "React Developer.",
                         "Python Developer."
