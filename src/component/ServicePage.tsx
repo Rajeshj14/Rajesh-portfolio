@@ -66,7 +66,7 @@ export default function ServicesSection() {
                         <h3 className="font-bold text-lg mb-2">{service.title}</h3>
                         <p className="text-gray-500 text-sm mb-4">
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure inventore ea nemo ab
-                            recusandae modi voluptates maxime ipsam eveniet. Facilis.
+                            recusandae modi voluptates maxime ipsam eveniet. Facili.
                         </p>
                         <button className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-gray-300 rounded-md shadow-sm hover:shadow-md">
                             Read More
